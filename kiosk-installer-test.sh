@@ -57,6 +57,7 @@ if [ -e "/home/kiosk-user/.config/openbox/autostart" ]; then
   mv /home/kiosk-user/.config/openbox/autostart /home/kiosk-user/.config/openbox/autostart.backup
 fi
 wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
+chown -R kiosk-user /home/kiosk-user/
 
 # cat > /home/kiosk-user/.config/openbox/autostart << EOF
 # #!/bin/bash
