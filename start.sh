@@ -9,6 +9,7 @@ chromium \
     --ignore-certificate-errors \
     --disable-restore-session-state \
     --start-maximized \
+    --hide-scrollbars \
     --disable \
     --disable-translate \
     --disable-infobars \
