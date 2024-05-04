@@ -1,6 +1,9 @@
 #!/bin/bash
 
-value=`cat url.txt`
+unclutter -idle 0.1 -grab -root &
+
+value=`cat /home/kiosk-user/chromeKiosk/url.txt`
+
 chromium \
     --no-first-run \
     --ignore-certificate-errors \
