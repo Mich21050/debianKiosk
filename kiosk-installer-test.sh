@@ -17,8 +17,6 @@ apt-get install \
 mkdir -p /home/kiosk-user/.config/openbox
 mkdir -p /home/kiosk-user/chromeKiosk/
 # get Start script
-wget -O /home/kiosk-user/chromeKiosk/start.sh https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
-chmod +x /home/kiosk-user/chromeKiosk/start.sh
 
 # create user if not exists
 id -u kiosk-user &>/dev/null || useradd -m kiosk-user  -s /bin/bash 
@@ -58,29 +56,31 @@ EOF
 if [ -e "/home/kiosk-user/.config/openbox/autostart" ]; then
   mv /home/kiosk-user/.config/openbox/autostart /home/kiosk-user/.config/openbox/autostart.backup
 fi
-cat > /home/kiosk-user/.config/openbox/autostart << EOF
-#!/bin/bash
+wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
 
-unclutter -idle 0.1 -grab -root &
+# cat > /home/kiosk-user/.config/openbox/autostart << EOF
+# #!/bin/bash
 
-value=`cat /home/kiosk-user/chromeKiosk/url.txt`
+# unclutter -idle 0.1 -grab -root &
 
-chromium \
-    --no-first-run \
-    --ignore-certificate-errors \
-    --disable-restore-session-state \
-    --start-maximized \
-    --disable \
-    --disable-translate \
-    --disable-infobars \
-    --disable-suggestions-service \
-    --disable-save-password-bubble \
-    --disable-session-crashed-bubble \
-    --incognito \
-    --kiosk \
-    --remote-debugging-port=9222 \
-    --remote-allow-origins=* \
-    $value
-EOF
+# value=`cat /home/kiosk-user/chromeKiosk/url.txt`
+
+# chromium \
+#     --no-first-run \
+#     --ignore-certificate-errors \
+#     --disable-restore-session-state \
+#     --start-maximized \
+#     --disable \
+#     --disable-translate \
+#     --disable-infobars \
+#     --disable-suggestions-service \
+#     --disable-save-password-bubble \
+#     --disable-session-crashed-bubble \
+#     --incognito \
+#     --kiosk \
+#     --remote-debugging-port=9222 \
+#     --remote-allow-origins=* \
+#     $value
+# EOF
 
 echo "Done!"
