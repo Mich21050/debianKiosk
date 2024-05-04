@@ -21,5 +21,3 @@ chromium \
     --remote-debugging-port=9222 \
     --remote-allow-origins=* \
     $value &
-
-docker run -d --network=host --restart=unless-stopped --name=chromeKiosk mich21050/chromekiosk &
