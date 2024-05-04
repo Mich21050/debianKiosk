@@ -3,6 +3,8 @@
 value=`cat url.txt`
 chromium \
     --no-first-run \
+    --ignore-certificate-errors \
+    --disable-restore-session-state \
     --start-maximized \
     --disable \
     --disable-translate \
