@@ -96,5 +96,5 @@ ExecStart=/usr/bin/docker run --rm --name %n \
 WantedBy=default.target
 EOF
 
-systemctl enable docker.chromekiosk
+ln -s /etc/systemd/system/docker.chromekiosk.service /etc/systemd/system/default.target.wants/docker.chromekiosk.service 
 echo "Done!"
