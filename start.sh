@@ -18,6 +18,10 @@ else
     echo "No external monitor detected on HDMI-1. Nothing to do."
 fi
 
+xset -dpms
+xset s off
+xset s noblank
+
 chromium \
     --no-first-run \
     --ignore-certificate-errors \
