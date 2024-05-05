@@ -72,5 +72,29 @@ fi
 wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
 chown -R kiosk-user /home/kiosk-user/
 
-docker run -d --network=host --restart=always -v /home/kiosk-user/chromeKiosk:/code/config --name=chromeKiosk mich21050/chromekiosk
+# docker run -d --network=host --restart=always -v /home/kiosk-user/chromeKiosk:/code/config --name=chromeKiosk mich21050/chromekiosk
+if [ -e "/etc/systemd/system/docker.chromeservice.service" ]; then
+  mv /etc/systemd/system/docker.chromeservice.service /etc/systemd/system/docker.chromeservice.service.backup
+fi
+cat > /etc/systemd/system/docker.chromeservice.service << EOF
+[Unit]
+Description=ChromeKiosk Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker exec %n stop
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStart=/usr/bin/docker run --rm --name %n \
+        --network=host \
+        -v /home/kiosk-user/chromeKiosk:/code/config \
+        mich21050/chromekiosk
+
+[Install]
+WantedBy=default.target
+EOF
+
+systemctl enable docker.chromekiosk
 echo "Done!"
