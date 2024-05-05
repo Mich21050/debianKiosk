@@ -73,10 +73,10 @@ wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent
 chown -R kiosk-user /home/kiosk-user/
 
 # docker run -d --network=host --restart=always -v /home/kiosk-user/chromeKiosk:/code/config --name=chromeKiosk mich21050/chromekiosk
-if [ -e "/etc/systemd/system/docker.chromeservice.service" ]; then
-  mv /etc/systemd/system/docker.chromeservice.service /etc/systemd/system/docker.chromeservice.service.backup
+if [ -e "/etc/systemd/system/docker.chromekiosk.service" ]; then
+  mv /etc/systemd/system/docker.chromekiosk.service /etc/systemd/system/docker.chromekiosk.service.backup
 fi
-cat > /etc/systemd/system/docker.chromeservice.service << EOF
+cat > /etc/systemd/system/docker.chromekiosk.service << EOF
 [Unit]
 Description=ChromeKiosk Container
 After=docker.service
