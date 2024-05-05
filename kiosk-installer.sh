@@ -2,6 +2,7 @@
 
 # be new
 apt-get update
+apt-get upgrade
 
 # get software
 apt-get install \
@@ -11,20 +12,21 @@ apt-get install \
     openbox \
     lightdm \
     locales \
+    wget \
+    sudo \
     -y
 
+wget -O - https://get.docker.com/ | bash
 # dir
-mkdir -p /home/kiosk/.config/openbox
-mkdir -p /home/kiosk/chromeKiosk/
+mkdir -p /home/kiosk-user/.config/openbox
+mkdir -p /home/kiosk-user/chromeKiosk/
 # get Start script
-wget -O /home/kiosk/chromeKiosk/start.sh https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
-chmod +x /home/kiosk/chromeKiosk/start.sh
 
 # create user if not exists
-id -u kiosk &>/dev/null || useradd -m kiosk  -s /bin/bash 
+id -u kiosk-user &>/dev/null || sudo useradd -m kiosk-user  -s /bin/bash 
 
 # rights
-chown -R kiosk /home/kiosk/
+chown -R kiosk-user /home/kiosk-user/
 
 # remove virtual consoles
 # if [ -e "/etc/X11/xorg.conf" ]; then
@@ -42,27 +44,24 @@ if [ -e "/etc/lightdm/lightdm.conf" ]; then
 fi
 cat > /etc/lightdm/lightdm.conf << EOF
 [SeatDefaults]
-autologin-user=kiosk
+autologin-user=kiosk-user
 user-session=openbox
 EOF
 
 # create default URL File
-if [ -e "/home/kiosk/chromeKiosk/url.txt" ]; then
-  mv /home/kiosk/chromeKiosk/url.txt /home/kiosk/chromeKiosk/url.txt.backup
+if [ -e "/home/kiosk-user/chromeKiosk/url.txt" ]; then
+  mv /home/kiosk-user/chromeKiosk/url.txt /home/kiosk-user/chromeKiosk/url.txt.backup
 fi
-cat > /home/kiosk/chromeKiosk/url.txt << EOF
+cat > /home/kiosk-user/chromeKiosk/url.txt << EOF
 https://www.aventec.at/
 EOF
 
 # create autostart
-if [ -e "/home/kiosk/.config/openbox/autostart" ]; then
-  mv /home/kiosk/.config/openbox/autostart /home/kiosk/.config/openbox/autostart.backup
+if [ -e "/home/kiosk-user/.config/openbox/autostart" ]; then
+  mv /home/kiosk-user/.config/openbox/autostart /home/kiosk-user/.config/openbox/autostart.backup
 fi
-cat > /home/kiosk/.config/openbox/autostart << EOF
-#!/bin/bash
+wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
+chown -R kiosk-user /home/kiosk-user/
 
-unclutter -idle 0.1 -grab -root &
-source /home/kiosk/chromeKiosk/start.sh &
-EOF
-
+docker run -d --network=host --restart=always -v /home/kiosk-user/chromeKiosk:/code/config --name=chromeKiosk mich21050/chromekiosk
 echo "Done!"
