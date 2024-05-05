@@ -72,6 +72,43 @@ fi
 wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
 chown -R kiosk-user /home/kiosk-user/
 
+cat > /home/kiosk-user/getimage.sh << EOF
+#!/bin/bash
+
+# Set the name of the Docker image
+image_name="mich21050/chromekiosk"
+
+# Set the number of retries
+num_retries=10
+
+# Function to check if the Docker image exists
+image_exists() {
+    docker image inspect "$image_name" &> /dev/null
+}
+
+# Function to pull the Docker image
+pull_image() {
+    echo "Pulling Docker image: $image_name"
+    docker pull "$image_name"
+}
+
+# Main loop to check if the image exists and pull if necessary
+for (( i=1; i<=$num_retries; i++ )); do
+    if image_exists; then
+        echo "Docker image $image_name exists."
+        break
+    else
+        echo "Docker image $image_name not found. Attempt $i of $num_retries"
+        if [ $i -eq $num_retries ]; then
+            echo "Max retries reached. Exiting..."
+            exit 1
+        fi
+        pull_image
+    fi
+done
+EOF
+chmod +x /home/kiosk-user/getimage.sh
+
 # docker run -d --network=host --restart=always -v /home/kiosk-user/chromeKiosk:/code/config --name=chromeKiosk mich21050/chromekiosk
 if [ -e "/etc/systemd/system/docker.chromekiosk.service" ]; then
   mv /etc/systemd/system/docker.chromekiosk.service /etc/systemd/system/docker.chromekiosk.service.backup
@@ -81,13 +118,15 @@ cat > /etc/systemd/system/docker.chromekiosk.service << EOF
 Description=ChromeKiosk Container
 After=docker.service
 Requires=docker.service
+After=network-online.target
+Requires=network-online.target
 
 [Service]
 TimeoutStartSec=0
 Restart=always
+ExecStartPre=/home/kiosk-user/getimage.sh
 ExecStartPre=-/usr/bin/docker exec %n stop
 ExecStartPre=-/usr/bin/docker rm %n
-ExecStartPre=/usr/bin/docker pull mich21050/chromekiosk
 ExecStart=/usr/bin/docker run --rm --name %n \
         --network=host \
         -v /home/kiosk-user/chromeKiosk:/code/config \
