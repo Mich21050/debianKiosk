@@ -37,15 +37,13 @@ id -u kiosk-user &>/dev/null || sudo useradd -m kiosk-user  -s /bin/bash
 # rights
 chown -R kiosk-user /home/kiosk-user/
 
-# remove virtual consoles
-# if [ -e "/etc/X11/xorg.conf" ]; then
-#   mv /etc/X11/xorg.conf /etc/X11/xorg.conf.backup
-# fi
-# cat > /etc/X11/xorg.conf << EOF
-# Section "ServerFlags"
-#     Option "DontVTSwitch" "true"
-# EndSection
-# EOF
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+cat << EOF >> /etc/systemd/logind.conf
+[Login]
+HandleLidSwitch=ignore
+HandleLidSwitchDocked=ignore
+HandleLidSwitchExternalPower=ignore
+EOF
 
 # create config
 if [ -e "/etc/lightdm/lightdm.conf" ]; then
