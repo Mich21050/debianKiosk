@@ -87,6 +87,7 @@ TimeoutStartSec=0
 Restart=always
 ExecStartPre=-/usr/bin/docker exec %n stop
 ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull mich21050/chromekiosk
 ExecStart=/usr/bin/docker run --rm --name %n \
         --network=host \
         -v /home/kiosk-user/chromeKiosk:/code/config \
@@ -96,5 +97,6 @@ ExecStart=/usr/bin/docker run --rm --name %n \
 WantedBy=default.target
 EOF
 
-ln -s /etc/systemd/system/docker.chromekiosk.service /etc/systemd/system/default.target.wants/docker.chromekiosk.service 
+# ln -s /etc/systemd/system/docker.chromekiosk.service /etc/systemd/system/default.target.wants/docker.chromekiosk.service 
+systemctl enable docker.chromekiosk
 echo "Done!"
