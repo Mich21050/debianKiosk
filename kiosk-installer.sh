@@ -102,4 +102,14 @@ EOF
 
 # ln -s /etc/systemd/system/docker.chromekiosk.service /etc/systemd/system/default.target.wants/docker.chromekiosk.service 
 systemctl enable docker.chromekiosk
+
+# configure wifi
+su -l -c "wpa_passphrase Heizung-WiFI fKGhhVwJ8uSBSq > /etc/wpa_supplicant/wpa_supplicant.conf"
+wpa_supplicant -B -Dwext -i wlp2s0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+cat << EOF >> /etc/network/interfaces
+allow-hotplug wlp2s0
+iface wlp2s0 inet dhcp
+        wpa-ssid Heizung-WiFi
+        wpa-psk fKGhhVwJ8uSBSq
+EOF
 echo "Done!"
