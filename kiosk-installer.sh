@@ -67,10 +67,10 @@ EOF
 if [ -e "/home/kiosk-user/.config/openbox/autostart" ]; then
   mv /home/kiosk-user/.config/openbox/autostart /home/kiosk-user/.config/openbox/autostart.backup
 fi
-wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent.com/Mich21050/debianKiosk/main/start.sh
+wget -O /home/kiosk-user/.config/openbox/autostart https://raw.githubusercontent.com/Mich21050/debianKioskPublic/main/start.sh
 chown -R kiosk-user /home/kiosk-user/
 
-wget -O /home/kiosk-user/getimage.sh https://raw.githubusercontent.com/Mich21050/debianKiosk/main/getimage.sh
+wget -O /home/kiosk-user/getimage.sh https://raw.githubusercontent.com/Mich21050/debianKioskPublic/main/getimage.sh
 chmod +x /home/kiosk-user/getimage.sh
 
 # docker run -d --network=host --restart=always -v /home/kiosk-user/chromeKiosk:/code/config --name=chromeKiosk mich21050/chromekiosk
@@ -104,12 +104,12 @@ EOF
 systemctl enable docker.chromekiosk
 
 # configure wifi
-su -l -c "wpa_passphrase Heizung-WiFI fKGhhVwJ8uSBSq > /etc/wpa_supplicant/wpa_supplicant.conf"
+su -l -c "wpa_passphrase Aventec_Screens sagichdirnicht > /etc/wpa_supplicant/wpa_supplicant.conf"
 wpa_supplicant -B -Dwext -i wlp2s0 -c /etc/wpa_supplicant/wpa_supplicant.conf
 cat << EOF >> /etc/network/interfaces
 allow-hotplug wlp2s0
 iface wlp2s0 inet dhcp
-        wpa-ssid Heizung-WiFi
-        wpa-psk fKGhhVwJ8uSBSq
+        wpa-ssid Aventec_Screens
+        wpa-psk sagichdirnicht
 EOF
 echo "Done!"
